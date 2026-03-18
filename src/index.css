@@ -56,6 +56,59 @@ a {
   color: var(--link-color);
 }
 
+/* === Animated Background === */
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 49px,
+      rgba(0, 240, 255, 0.03) 49px,
+      rgba(0, 240, 255, 0.03) 50px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 49px,
+      rgba(0, 240, 255, 0.03) 49px,
+      rgba(0, 240, 255, 0.03) 50px
+    );
+  pointer-events: none;
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(
+    135deg,
+    rgba(0, 240, 255, 0.05) 0%,
+    transparent 40%,
+    rgba(255, 0, 170, 0.05) 60%,
+    transparent 100%
+  );
+  background-size: 200% 200%;
+  animation: none;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  body::after {
+    animation: gradient-sweep 20s ease-in-out infinite;
+  }
+}
+
+@keyframes gradient-sweep {
+  0%, 100% { background-position: 0% 0%; }
+  50% { background-position: 100% 100%; }
+}
+
 /* === Editor === */
 
 #editor {
