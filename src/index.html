@@ -1,60 +1,59 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Bi the Change You Wish to Si</title>
+  <title>Hello Vorld — A Course on Computer Programming</title>
   <link rel="stylesheet" href="https://unpkg.com/tachyons@4.12.0/css/tachyons.css"/>
   <link rel="stylesheet" href="./index.css" />
 </head>
 
-<body class="bg-black o-01">
-  <div class="vh-100">
-    <div class="stuff">
-    <div class="mh3 mb3 pt3">
-      <div class="flex justify-between">
-        <h2 class="mt1 f5">A Course on Computer Programming</h2>
-        <div><button id="toggle-theme">toggle theme</button></div>
+<body>
+  <div class="site-container">
+
+    <!-- Header -->
+    <header class="site-header ph3 pv2 flex items-center justify-between">
+      <div class="flex items-center">
+        <h2 class="mv0 f5 cyber-title">A Course on Computer Programming</h2>
+        <button type="button" id="toggle-lesson" class="cyber-btn ml3 f7">Lesson</button>
+      </div>
+      <button id="toggle-theme" class="cyber-btn">Toggle Theme</button>
+    </header>
+
+    <!-- Collapsible Lesson Panel -->
+    <div id="lesson-panel" class="lesson-panel ph3 pv2">
+      <div class="cyber-panel">
+        <h1 class="mv0 f4 cyber-title">Lesson 1 — Hello World</h1>
+        <p class="mv2">Hello. Let's create the world.</p>
+        <p class="mv0">
+          A work in progress.<br/>
+          Have any questions? Feel free to ask me anything at
+          <a href="mailto:tam@hellovorld.com">tam@hellovorld.com</a>.
+        </p>
       </div>
     </div>
-    </div>
 
-    <div class="flex mh3 mb3 pt3">
-      <div id="lesson" class="flex-grow-1 mr3">
+    <!-- Main Two-Panel Layout -->
+    <main class="main-panels ph3 pb3 flex">
 
-<div class="stuff">
-<h1 class="mv0">
-  Lesson 1 - Hello World
-</h1>
-<p>Hello. Let's create the world.</p>
-<p>
-  A work in progress.
-<br/>
-Have any questions? Feel free to ask me anything at <a style="color: white;" href="mailto:tam@hellovorld.com">tam@hellovorld.com</a>.
-  </p>
-</div>
-
-        <form id="editor-form">
-
-          <div class="fr">
-            <button type="button" id="expand-editor-v">⬆</button>
-          </div>
-
-          <textarea name="editor" id="editor" class="w-100 bg-white bg-black o-01" rows="20" autocorrect="off" autocapitalize="off"
-            spellcheck="false"></textarea>
-
-          <div>
-            <div class="fr">
-              <button type="button" id="magic">Magic</button>
-              <button id="execute">Execute</button>
+      <!-- Left: Editor Panel -->
+      <div id="editor-panel" class="editor-panel cyber-panel mr3 flex flex-column">
+        <form id="editor-form" class="flex flex-column flex-grow-1">
+          <textarea name="editor" id="editor" rows="20" autocorrect="off"
+            autocapitalize="off" spellcheck="false" class="flex-grow-1"></textarea>
+          <div class="flex justify-between items-center mt2">
+            <button type="button" id="expand-editor-v" class="cyber-btn">&#x2B06;</button>
+            <div class="flex">
+              <button type="button" id="magic" class="cyber-btn cyber-btn--magic mr2">Magic</button>
+              <button id="execute" class="cyber-btn cyber-btn--execute">Execute</button>
             </div>
-            <div class="cf"></div>
           </div>
         </form>
       </div>
 
-      <div id="console">
+      <!-- Right: Canvas Panel -->
+      <div id="console" class="console-panel cyber-panel flex flex-column">
         <div id="output">
           <div data-level="top" data-hidden="1" class="flex">
             <canvas id="orule"></canvas>
@@ -73,26 +72,24 @@ Have any questions? Feel free to ask me anything at <a style="color: white;" hre
               </div>
             </div>
           </div>
-          <div data-level="bottom" data-hidden="1"  class="flex">
+          <div data-level="bottom" data-hidden="1" class="flex">
             <canvas id="orule2"></canvas>
             <canvas id="xrule2"></canvas>
           </div>
         </div>
-        <div class="flex justify-between">
-          <button type="button" id="console-toggle-rules">Toggle Rules</button>
-          <!-- <button type="button" id="toggleKeyboardShortcuts">Toggle Keyboard Shortcuts</button> -->
-          <!-- <div id="statusKeyboardShortcuts"></div> -->
-          <div class="flex mr4 arrow-buttons">
-            <button type="button" id="key-arrow-left">&loarr;</button>
-<div class="w2"></div>
-            <button type="button" id="key-arrow-up" class="rotate-90">&loarr;</button>
-<div class="w2"></div>
-            <button type="button" id="key-arrow-right">&roarr;</button>
+        <div class="flex justify-between items-center mt2">
+          <button type="button" id="console-toggle-rules" class="cyber-btn cyber-btn--purple">Toggle Rules</button>
+          <div class="flex arrow-buttons">
+            <button type="button" id="key-arrow-left" class="cyber-btn">&loarr;</button>
+            <div class="w1"></div>
+            <button type="button" id="key-arrow-up" class="cyber-btn rotate-90">&loarr;</button>
+            <div class="w1"></div>
+            <button type="button" id="key-arrow-right" class="cyber-btn">&roarr;</button>
           </div>
         </div>
       </div>
 
-    </div>
+    </main>
   </div>
 
   <script type="module" src="./scripts/index.js"></script>

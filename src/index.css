@@ -239,6 +239,134 @@ body::after {
   animation: flash-execute 0.5s ease-out;
 }
 
+/* === Layout === */
+
+.site-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.site-header {
+  border-bottom: 1px solid var(--border-color);
+}
+
+.cyber-title {
+  color: var(--neon-cyan);
+  text-shadow: var(--glow-cyan);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .site-header .cyber-title {
+    animation: title-pulse 3s ease-in-out infinite;
+  }
+}
+
+@keyframes title-pulse {
+  0%, 100% { text-shadow: var(--glow-cyan); }
+  50% { text-shadow: 0 0 20px rgba(0, 240, 255, 0.6), 0 0 40px rgba(0, 240, 255, 0.2); }
+}
+
+.lesson-panel {
+  border-bottom: 1px solid var(--border-color);
+}
+
+.main-panels {
+  flex: 1;
+  min-height: 0;
+  padding-top: 0.75rem;
+}
+
+.editor-panel {
+  flex: 1;
+  min-width: 0;
+}
+
+.console-panel {
+  flex-shrink: 0;
+}
+
+#editor {
+  min-height: 300px;
+}
+
+/* === Page-Load Animations === */
+
+.site-header,
+.editor-panel,
+.console-panel {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .site-header {
+    animation: fade-slide-in 0.6s ease-out 0.1s forwards;
+  }
+  .editor-panel {
+    animation: fade-slide-in 0.6s ease-out 0.3s forwards;
+  }
+  .console-panel {
+    animation: fade-slide-in 0.6s ease-out 0.5s forwards;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-header,
+  .editor-panel,
+  .console-panel {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes fade-slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* === Mobile Responsive === */
+
+@media (max-width: 768px) {
+  .main-panels {
+    flex-direction: column;
+  }
+
+  .editor-panel {
+    margin-right: 0;
+    margin-bottom: 0.75rem;
+  }
+
+  #world-wrapper canvas {
+    width: 100%;
+    height: auto;
+    max-width: 450px;
+  }
+
+  .arrow-buttons .cyber-btn {
+    min-height: 48px;
+    min-width: 48px;
+  }
+}
+
+@media (max-width: 768px) and (prefers-reduced-motion: no-preference) {
+  .site-header {
+    animation-delay: 0.05s;
+  }
+  .editor-panel {
+    animation-delay: 0.15s;
+  }
+  .console-panel {
+    animation-delay: 0.25s;
+  }
+}
+
 /* === Utility === */
 
 [data-hidden="1"] {
@@ -246,7 +374,11 @@ body::after {
 }
 
 .arrow-buttons {
-  /* FIXME: Get arrows to be non-selectable on touch devices */
   user-select: none;
   -webkit-touch-callout: none;
+  gap: 0.5rem;
+}
+
+.rotate-90 {
+  transform: rotate(90deg);
 }
