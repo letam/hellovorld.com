@@ -10,13 +10,15 @@ const isIOS = navigator.userAgent.match(/ipad|iphone|ipod/i)
 
 function main() {
   // eslint-disable-next-line no-unused-vars
-  let lesson = document.getElementById("lesson")
-  // eslint-disable-next-line no-unused-vars
   let output = document.getElementById("output")
   // eslint-disable-next-line no-unused-vars
   let worldWrapper = document.getElementById("world-wrapper")
 
   let debugFunction = () => console.log("DEBUG: debugFunction is empty.")
+
+  function getRulerColor() {
+    return currentTheme === "dark" ? "#00f0ff" : "#0088aa"
+  }
 
   let shouldTransitionOnEval = true
   let transitionOnEvalTime = 0.05
@@ -97,6 +99,16 @@ function main() {
         await sleep(transitionOnEvalTime)
         // console.log('transition complete')
         worldCanvas.style.opacity = 1
+
+        // Trigger canvas flash animation
+        worldWrapper.classList.add("flash-execute")
+        document.getElementById("editor-panel").classList.add("flash-execute")
+        worldWrapper.addEventListener("animationend", () => {
+          worldWrapper.classList.remove("flash-execute")
+        }, { once: true })
+        document.getElementById("editor-panel").addEventListener("animationend", () => {
+          document.getElementById("editor-panel").classList.remove("flash-execute")
+        }, { once: true })
       }
     } catch (e) {
       // TODO: Display error on screen, pointing to line number where error fails
@@ -134,7 +146,7 @@ function main() {
   let orule = oruleCanvas.getContext("2d")
   let oruleBak = { strokeStyle: orule.strokeStyle }
   function createORule() {
-    orule.strokeStyle = currentTheme === "dark" ? "white" : "black"
+    orule.strokeStyle = getRulerColor()
     orule.lineWidth = 0.8
     strokeLine(
       orule,
@@ -152,8 +164,8 @@ function main() {
   let xrule = xruleCanvas.getContext("2d")
   let xruleBak = { strokeStyle: xrule.strokeStyle, fillStyle: xrule.fillStyle }
   function createXRule() {
-    xrule.strokeStyle = currentTheme === "dark" ? "white" : "black"
-    xrule.fillStyle = currentTheme === "dark" ? "white" : "black"
+    xrule.strokeStyle = getRulerColor()
+    xrule.fillStyle = getRulerColor()
     xrule.initialFont = xrule.font
     xrule.lineWidth = 2
     strokeLine(xrule, 0, xruleCanvas.height, WORLD_SIZE.w, xruleCanvas.height)
@@ -199,8 +211,8 @@ function main() {
   let yrule = yruleCanvas.getContext("2d")
   let yruleBak = { strokeStyle: yrule.strokeStyle, fillStyle: yrule.fillStyle }
   function createYRule() {
-    yrule.strokeStyle = currentTheme === "dark" ? "white" : "black"
-    yrule.fillStyle = currentTheme === "dark" ? "white" : "black"
+    yrule.strokeStyle = getRulerColor()
+    yrule.fillStyle = getRulerColor()
     yrule.lineWidth = 2
     strokeLine(yrule, yruleCanvas.width, 0, yruleCanvas.width, yruleCanvas.height)
     // yrule.initialFont = yrule.font
@@ -231,7 +243,7 @@ function main() {
   let yrule2 = yruleCanvas2.getContext("2d")
   let yrule2Bak = { strokeStyle: orule.strokeStyle }
   function createYRule2() {
-    yrule2.strokeStyle = currentTheme === "dark" ? "white" : "black"
+    yrule2.strokeStyle = getRulerColor()
     yrule2.lineWidth = 0.8
     strokeLine(yrule2, 0, 0, 0, yruleCanvas.height)
     for (let i = 0; i <= yruleCanvas.height; i += 50) {
@@ -250,8 +262,8 @@ function main() {
   let orule2 = oruleCanvas2.getContext("2d")
   let orule2Bak = { strokeStyle: orule2.strokeStyle, fillStyle: orule2.fillStyle }
   function createORule2() {
-    orule2.strokeStyle = currentTheme === "dark" ? "white" : "black"
-    orule2.fillStyle = currentTheme === "dark" ? "white" : "black"
+    orule2.strokeStyle = getRulerColor()
+    orule2.fillStyle = getRulerColor()
     orule2.lineWidth = 2
     strokeLine(
       orule2,
@@ -287,7 +299,7 @@ function main() {
   let xrule2 = xruleCanvas2.getContext("2d")
   let xrule2Bak = { strokeStyle: orule.strokeStyle }
   function createXrule2() {
-    xrule2.strokeStyle = currentTheme === "dark" ? "white" : "black"
+    xrule2.strokeStyle = getRulerColor()
     xrule2.lineWidth = 0.8
     strokeLine(xrule2, 0, 0, xruleCanvas2.width - 25, 0)
     for (let i = 0; i < xruleCanvas2.width; i += 50) {
@@ -307,6 +319,15 @@ function main() {
     createYRule2()
     createORule2()
     createXrule2()
+  }
+
+  bag.clearCanvasRules = function () {
+    orule.clearRect(0, 0, oruleCanvas.width, oruleCanvas.height)
+    xrule.clearRect(0, 0, xruleCanvas.width, xruleCanvas.height)
+    yrule.clearRect(0, 0, yruleCanvas.width, yruleCanvas.height)
+    yrule2.clearRect(0, 0, yruleCanvas2.width, yruleCanvas2.height)
+    orule2.clearRect(0, 0, oruleCanvas2.width, oruleCanvas2.height)
+    xrule2.clearRect(0, 0, xruleCanvas2.width, xruleCanvas2.height)
   }
 
   let isRulesVisible = false
@@ -339,23 +360,33 @@ function main() {
   // eslint-disable-next-line no-unused-vars
   document.getElementById("expand-editor-v").addEventListener("click", (e) => {
     if (!isExpandedV) {
-      // Hide stuff
-      Array.from(document.getElementsByClassName("stuff")).forEach((el) => {
-        el.style.display = "none"
-      })
+      document.querySelector(".site-header").style.display = "none"
+      document.getElementById("lesson-panel").style.display = "none"
       e.target.innerText = ICON_ARROW_DOWN
       document.querySelector("#editor").style.height = isIOS
         ? `calc(100vh - ${2 * 44}px - 50px)`
         : `calc(100vh - ${2 * 44}px)`
     } else {
-      // Show stuff
-      Array.from(document.getElementsByClassName("stuff")).forEach((el) => {
-        el.style.display = ""
-      })
+      document.querySelector(".site-header").style.display = ""
+      let shouldShowLesson = localStorage.getItem("lessonVisible") !== "false"
+      document.getElementById("lesson-panel").style.display = shouldShowLesson ? "" : "none"
       e.target.innerText = ICON_ARROW_UP
       document.querySelector("#editor").style.height = ``
     }
     isExpandedV = !isExpandedV
+  })
+
+  /* Lesson panel toggle */
+  let lessonPanel = document.getElementById("lesson-panel")
+  let lessonState = localStorage.getItem("lessonVisible")
+  // First visit: show lesson. Subsequent visits: respect saved state. Mobile: auto-collapse.
+  let isMobile = window.innerWidth <= 768
+  let lessonVisible = lessonState === null ? !isMobile : lessonState === "true"
+  lessonPanel.style.display = lessonVisible ? "" : "none"
+  document.getElementById("toggle-lesson").addEventListener("click", () => {
+    lessonVisible = !lessonVisible
+    lessonPanel.style.display = lessonVisible ? "" : "none"
+    localStorage.setItem("lessonVisible", lessonVisible)
   })
 
   let midContainer = document
@@ -950,75 +981,27 @@ function main() {
 }
 
 function themeConfiguration() {
-  let editor = document.getElementById("editor")
-  function setDarkmodeTheme() {
-    document.body.classList.add("bg-black-90", "near-white")
-    document.body.dataset.theme = "dark"
-    editor.classList.add("darkmode")
-    currentTheme = "dark"
-    localStorage.setItem("theme", currentTheme)
-  }
-  function setLightmodeTheme() {
-    document.body.classList.remove("bg-black-90", "near-white")
-    delete document.body.dataset.theme
-    editor.classList.remove("darkmode")
-    currentTheme = "light"
-    localStorage.setItem("theme", currentTheme)
-  }
   function setTheme(theme) {
-    switch (theme) {
-      case "dark":
-        setDarkmodeTheme()
-        break
-      case "light":
-        setLightmodeTheme()
-        break
-    }
+    document.documentElement.setAttribute("data-theme", theme)
+    currentTheme = theme
+    localStorage.setItem("theme", currentTheme)
+    bag.clearCanvasRules()
     bag.createCanvasRule()
   }
 
-  // eslint-disable-next-line no-unused-vars
-  document.getElementById("toggle-theme").addEventListener("click", (e) => {
-    if (currentTheme === "dark") {
-      setTheme("light")
-    } else if (currentTheme === "light") {
-      setTheme("dark")
-    }
+  document.getElementById("toggle-theme").addEventListener("click", () => {
+    setTheme(currentTheme === "dark" ? "light" : "dark")
   })
+
   setTheme(currentTheme)
   revealDocumentBody()
-  revealEditor()
 }
 
 function revealDocumentBody() {
-  // Set transition animation property
-  let transitionDuration = 1.5
-  let transitions = [
-    `opacity ${transitionDuration}s ease-in-out`,
-    `background-color ${transitionDuration}s`,
-  ]
-  document.body.style.transition = transitions.join()
-
-  // Remove black background and restore full opacity
-  document.body.classList.remove("bg-black")
-  document.body.classList.remove("o-01")
+  // Body no longer uses o-01 class — child element animations handle the reveal.
+  // This function is kept as a no-op for compatibility with the call in themeConfiguration().
 }
 
-function revealEditor() {
-  // Set transition animation property
-  let editor = document.getElementById("editor")
-  let transitionDuration = 1.5
-  let transitions = [
-    `opacity ${transitionDuration}s ease-in-out`,
-    `background-color ${transitionDuration}s`,
-    `color ${transitionDuration}s`,
-  ]
-  editor.style.transition = transitions.join()
-
-  // Remove black background and restore full opacity
-  editor.classList.remove("bg-black")
-  editor.classList.remove("o-01")
-}
 
 function getEditorWelcomeMessage() {
   return `// Hello there!
