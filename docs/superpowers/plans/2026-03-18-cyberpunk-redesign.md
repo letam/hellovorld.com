@@ -81,7 +81,7 @@ a {
 }
 ```
 
-Keep `.o-01` for initial page load (it gets removed by JS). Remove `.darkmode` class (replaced by custom properties). Remove `body[data-theme="dark"] a` (replaced by generic `a` rule).
+Remove `.o-01` (no longer needed — child element CSS animations handle the page reveal). Remove `.darkmode` class (replaced by custom properties). Remove `body[data-theme="dark"] a` (replaced by generic `a` rule).
 
 - [ ] **Step 3: Verify in browser**
 
@@ -235,6 +235,16 @@ git commit -m "feat: add animated cyberpunk grid background"
   border-color: var(--neon-magenta);
 }
 
+.cyber-btn--purple {
+  border-color: rgba(180, 74, 255, 0.4);
+  box-shadow: var(--glow-purple);
+}
+
+.cyber-btn--purple:hover {
+  box-shadow: var(--glow-purple);
+  border-color: var(--neon-purple);
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .cyber-btn--magic {
     animation: pulse-magenta 2s ease-in-out infinite;
@@ -345,7 +355,7 @@ Restructure from the current nested layout to a clean two-panel design. The key 
   <link rel="stylesheet" href="./index.css" />
 </head>
 
-<body class="o-01">
+<body>
   <div class="site-container">
 
     <!-- Header -->
@@ -358,7 +368,7 @@ Restructure from the current nested layout to a clean two-panel design. The key 
     </header>
 
     <!-- Collapsible Lesson Panel -->
-    <div id="lesson-panel" class="lesson-panel ph3 pv2" style="display: none;">
+    <div id="lesson-panel" class="lesson-panel ph3 pv2">
       <div class="cyber-panel">
         <h1 class="mv0 f4 cyber-title">Lesson 1 — Hello World</h1>
         <p class="mv2">Hello. Let's create the world.</p>
@@ -414,7 +424,7 @@ Restructure from the current nested layout to a clean two-panel design. The key 
           </div>
         </div>
         <div class="flex justify-between items-center mt2">
-          <button type="button" id="console-toggle-rules" class="cyber-btn">Toggle Rules</button>
+          <button type="button" id="console-toggle-rules" class="cyber-btn cyber-btn--purple">Toggle Rules</button>
           <div class="flex arrow-buttons">
             <button type="button" id="key-arrow-left" class="cyber-btn">&loarr;</button>
             <div class="w1"></div>
@@ -436,7 +446,7 @@ Restructure from the current nested layout to a clean two-panel design. The key 
 
 Key differences from the old HTML:
 - `data-theme="dark"` on `<html>` (not body)
-- Removed `bg-black` from body, kept `o-01` for initial reveal
+- Removed `bg-black` and `o-01` from body — child element CSS animations handle the reveal
 - Removed `vh-100` wrapper div, replaced with `.site-container`
 - Header is its own `<header>` element with lesson toggle button
 - Lesson content is in a separate collapsible `#lesson-panel` div
@@ -624,7 +634,24 @@ function getRulerColor() {
 }
 ```
 
-- [ ] **Step 2: Update all 6 ruler functions to use `getRulerColor()`**
+- [ ] **Step 2: Add canvas clearing before ruler redraws**
+
+Add a `clearCanvasRules()` function right after `bag.createCanvasRule` (around line 310):
+
+```javascript
+bag.clearCanvasRules = function () {
+  orule.clearRect(0, 0, oruleCanvas.width, oruleCanvas.height)
+  xrule.clearRect(0, 0, xruleCanvas.width, xruleCanvas.height)
+  yrule.clearRect(0, 0, yruleCanvas.width, yruleCanvas.height)
+  yrule2.clearRect(0, 0, yruleCanvas2.width, yruleCanvas2.height)
+  orule2.clearRect(0, 0, oruleCanvas2.width, oruleCanvas2.height)
+  xrule2.clearRect(0, 0, xruleCanvas2.width, xruleCanvas2.height)
+}
+```
+
+Then in the `setTheme()` function (Task 5, Step 6), call `bag.clearCanvasRules()` before `bag.createCanvasRule()`. Without this, switching themes layers new colored strokes over old ones.
+
+- [ ] **Step 3: Update all 6 ruler functions to use `getRulerColor()`**
 
 Replace every occurrence of `currentTheme === "dark" ? "white" : "black"` with `getRulerColor()`. These appear in:
 - `createORule()` (line 137) — `orule.strokeStyle = getRulerColor()`
@@ -634,7 +661,7 @@ Replace every occurrence of `currentTheme === "dark" ? "white" : "black"` with `
 - `createORule2()` (lines 253-254) — both `orule2.strokeStyle` and `orule2.fillStyle`
 - `createXrule2()` (line 290) — `xrule2.strokeStyle`
 
-- [ ] **Step 3: Add flash-execute trigger in `evalCode()`**
+- [ ] **Step 4: Add flash-execute trigger in `evalCode()`**
 
 After `worldCanvas.style.opacity = 1` (around line 99), add:
 
@@ -650,17 +677,18 @@ document.getElementById("editor-panel").addEventListener("animationend", () => {
 }, { once: true })
 ```
 
-- [ ] **Step 4: Add lesson panel toggle after expand-editor-v handler**
+- [ ] **Step 5: Add lesson panel toggle after expand-editor-v handler**
 
 Add after the expand-editor-v event listener block (around line 359):
 
 ```javascript
 /* Lesson panel toggle */
 let lessonPanel = document.getElementById("lesson-panel")
-let lessonVisible = localStorage.getItem("lessonVisible") !== "false"
-if (lessonVisible) {
-  lessonPanel.style.display = ""
-}
+let lessonState = localStorage.getItem("lessonVisible")
+// First visit: show lesson. Subsequent visits: respect saved state. Mobile: auto-collapse.
+let isMobile = window.innerWidth <= 768
+let lessonVisible = lessonState === null ? !isMobile : lessonState === "true"
+lessonPanel.style.display = lessonVisible ? "" : "none"
 document.getElementById("toggle-lesson").addEventListener("click", () => {
   lessonVisible = !lessonVisible
   lessonPanel.style.display = lessonVisible ? "" : "none"
@@ -668,7 +696,7 @@ document.getElementById("toggle-lesson").addEventListener("click", () => {
 })
 ```
 
-- [ ] **Step 5: Update expand-editor-v handler to target new elements**
+- [ ] **Step 6: Update expand-editor-v handler to target new elements**
 
 Replace the handler (lines 340-359) — change `document.getElementsByClassName("stuff")` references to target `.site-header` and `#lesson-panel`:
 
@@ -692,7 +720,7 @@ document.getElementById("expand-editor-v").addEventListener("click", (e) => {
 })
 ```
 
-- [ ] **Step 6: Rewrite `themeConfiguration()` (lines 952-991)**
+- [ ] **Step 7: Rewrite `themeConfiguration()` (lines 952-991)**
 
 Replace the entire function with:
 
@@ -702,6 +730,7 @@ function themeConfiguration() {
     document.documentElement.setAttribute("data-theme", theme)
     currentTheme = theme
     localStorage.setItem("theme", currentTheme)
+    bag.clearCanvasRules()
     bag.createCanvasRule()
   }
 
@@ -716,25 +745,26 @@ function themeConfiguration() {
 
 Note: removed `revealEditor()` call — editor reveal is handled by CSS panel animation.
 
-- [ ] **Step 7: Simplify `revealDocumentBody()` (lines 993-1005)**
+- [ ] **Step 8: Simplify `revealDocumentBody()` (lines 993-1005)**
 
 Replace with:
 
 ```javascript
 function revealDocumentBody() {
-  document.body.classList.remove("o-01")
+  // Body no longer uses o-01 class — child element animations handle the reveal.
+  // This function is kept as a no-op for compatibility with the call in themeConfiguration().
 }
 ```
 
-- [ ] **Step 8: Remove `revealEditor()` function (lines 1007-1021)**
+- [ ] **Step 9: Remove `revealEditor()` function (lines 1007-1021)**
 
 Delete the entire `revealEditor()` function. The editor's appearance is handled by the CSS panel animation.
 
-- [ ] **Step 9: Remove the `#lesson` element reference**
+- [ ] **Step 10: Remove the `#lesson` element reference**
 
 In `main()`, line 13: `let lesson = document.getElementById("lesson")` — this element no longer exists. Remove this line.
 
-- [ ] **Step 10: Verify full functionality in browser**
+- [ ] **Step 11: Verify full functionality in browser**
 
 Reload `http://localhost:3000`. Test:
 - Dark theme loads correctly (neon cyan title, dark background, glowing panels)
@@ -748,7 +778,7 @@ Reload `http://localhost:3000`. Test:
 - Arrow buttons work
 - localStorage persists theme and lesson state
 
-- [ ] **Step 11: Commit**
+- [ ] **Step 12: Commit**
 
 ```bash
 git add src/scripts/index.js
