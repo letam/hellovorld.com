@@ -109,19 +109,134 @@ body::after {
   50% { background-position: 100% 100%; }
 }
 
+/* === Glass-Morphism Panel === */
+
+.cyber-panel {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: var(--glow-cyan);
+  padding: 1rem;
+}
+
+@supports (backdrop-filter: blur(10px)) {
+  .cyber-panel {
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+}
+
+/* === Cyber Buttons === */
+
+.cyber-btn {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  color: var(--text-primary);
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.875rem;
+  transition: box-shadow 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
+}
+
+.cyber-btn:hover {
+  box-shadow: var(--glow-cyan);
+  border-color: var(--neon-cyan);
+  transform: scale(1.03);
+}
+
+.cyber-btn:active {
+  transform: scale(0.97);
+}
+
+.cyber-btn--execute {
+  border-color: rgba(0, 240, 255, 0.4);
+  box-shadow: var(--glow-cyan);
+}
+
+.cyber-btn--magic {
+  border-color: rgba(255, 0, 170, 0.4);
+  box-shadow: var(--glow-magenta);
+}
+
+.cyber-btn--magic:hover {
+  box-shadow: var(--glow-magenta);
+  border-color: var(--neon-magenta);
+}
+
+.cyber-btn--purple {
+  border-color: rgba(180, 74, 255, 0.4);
+  box-shadow: var(--glow-purple);
+}
+
+.cyber-btn--purple:hover {
+  box-shadow: var(--glow-purple);
+  border-color: var(--neon-purple);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .cyber-btn--magic {
+    animation: pulse-magenta 2s ease-in-out infinite;
+  }
+}
+
+@keyframes pulse-magenta {
+  0%, 100% { box-shadow: var(--glow-magenta); }
+  50% { box-shadow: 0 0 25px rgba(255, 0, 170, 0.6); }
+}
+
 /* === Editor === */
 
 #editor {
-  font-family: Consolas, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono,
-    Bitstream Vera Sans Mono, Courier New;
+  font-family: Consolas, Monaco, "Lucida Console", "Liberation Mono",
+    "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Courier New", monospace;
   resize: vertical;
+  background: var(--bg-panel);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1rem;
+  caret-color: var(--neon-cyan);
+  outline: none;
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+#editor:focus {
+  box-shadow: var(--glow-cyan);
+  border-color: var(--neon-cyan);
+}
+
+@supports (backdrop-filter: blur(10px)) {
+  #editor {
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
 }
 
 /* === Canvas Wrapper === */
 
 #world-wrapper {
-  border: 1px solid lightgray;
-  background-color: black;
+  background-color: var(--canvas-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  box-shadow: var(--glow-cyan);
+  overflow: hidden;
+  transition: box-shadow 0.3s ease;
+}
+
+/* === Execution Flash === */
+
+@keyframes flash-execute {
+  0% { box-shadow: var(--glow-cyan); }
+  30% { box-shadow: 0 0 30px rgba(0, 240, 255, 0.8); }
+  100% { box-shadow: var(--glow-cyan); }
+}
+
+.flash-execute {
+  animation: flash-execute 0.5s ease-out;
 }
 
 /* === Utility === */
