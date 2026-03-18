@@ -1,8 +1,62 @@
 /**
  * Styles
  */
-#lesson {
+
+/* === Theme Custom Properties === */
+
+:root,
+[data-theme="dark"] {
+  --bg-primary: #0a0a0f;
+  --bg-panel: rgba(15, 15, 30, 0.85);
+  --bg-panel-solid: rgb(15, 15, 30);
+  --text-primary: #e0e0e8;
+  --text-secondary: #8888aa;
+  --neon-cyan: #00f0ff;
+  --neon-magenta: #ff00aa;
+  --neon-purple: #b44aff;
+  --glow-cyan: 0 0 15px rgba(0, 240, 255, 0.4);
+  --glow-magenta: 0 0 15px rgba(255, 0, 170, 0.4);
+  --glow-purple: 0 0 15px rgba(180, 74, 255, 0.4);
+  --ruler-color: #00f0ff;
+  --canvas-bg: #000000;
+  --border-color: rgba(0, 240, 255, 0.2);
+  --link-color: var(--neon-cyan);
 }
+
+[data-theme="light"] {
+  --bg-primary: #f0f0f5;
+  --bg-panel: rgba(255, 255, 255, 0.85);
+  --bg-panel-solid: rgb(240, 240, 245);
+  --text-primary: #1a1a2e;
+  --text-secondary: #555577;
+  --neon-cyan: #0088aa;
+  --neon-magenta: #cc0088;
+  --neon-purple: #8822cc;
+  --glow-cyan: 0 0 12px rgba(0, 136, 170, 0.3);
+  --glow-magenta: 0 0 12px rgba(204, 0, 136, 0.3);
+  --glow-purple: 0 0 12px rgba(136, 34, 204, 0.3);
+  --ruler-color: #0088aa;
+  --canvas-bg: #1a1a2e;
+  --border-color: rgba(0, 136, 170, 0.3);
+  --link-color: var(--neon-cyan);
+}
+
+/* === Base Styles === */
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: system-ui, -apple-system, sans-serif;
+  margin: 0;
+  min-height: 100vh;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+a {
+  color: var(--link-color);
+}
+
+/* === Editor === */
 
 #editor {
   font-family: Consolas, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono,
@@ -10,26 +64,17 @@
   resize: vertical;
 }
 
+/* === Canvas Wrapper === */
+
 #world-wrapper {
   border: 1px solid lightgray;
   background-color: black;
 }
 
+/* === Utility === */
+
 [data-hidden="1"] {
   visibility: hidden;
-}
-
-.darkmode {
-  background-color: rgba(36, 36, 36, 1);
-  color: rgba(216, 216, 216, 1);
-}
-
-body[data-theme="dark"] a {
-  color: white;
-}
-
-.o-01 {
-  opacity: 0.01;
 }
 
 .arrow-buttons {
