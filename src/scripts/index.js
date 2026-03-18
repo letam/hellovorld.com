@@ -1,8 +1,6 @@
 // eslint-disable-next-line no-unused-vars
 import { sleep, strSplice, $ } from "./util.js"
 
-console.log("hello")
-
 let bag = {}
 let currentTheme = localStorage.getItem("theme") || "dark"
 
@@ -999,9 +997,7 @@ function themeConfiguration() {
 
 function revealDocumentBody() {
   // Body no longer uses o-01 class — child element animations handle the reveal.
-  // This function is kept as a no-op for compatibility with the call in themeConfiguration().
 }
-
 
 function getEditorWelcomeMessage() {
   return `// Hello there!
